@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="blog_area p_120">
+  <div class="container">
+    <div class="row">
+      <div class="container-fluid">
+        <div class="blog_left_sidebar">
+
+          <h2 style="color:forestgreen">Register <img src="{% static 'img/whiskeyChristmasLogo_full.gif' %}" alt="whiskey christmas GIF icon" style="width:auto;height:36px;"></h2><hr>
+          <div>
+            <p>Already a member? <a href="{% url 'users:login' %}">Login</a>
+            </p>
+          </div>
+          <br>
+          <form method="post">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div id="errors">
+              <div class="inner">
+                <p style="color:red">Please correct the errors below</p>
+                <ul>
+                  {% for field in form %}
+                  {% if field.errors %}
+                  <li>{{ form.label }} {{ field.errors|striptags }}</li>
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            <br>
+            {% endif %}
+
+            <div class="mt-10">
+							<input type="text" name="username" placeholder="username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'username'" required="" class="form-control">
+						</div><br>
+            <div class="mt-10">
+							<input type="text" name="email" placeholder="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'email'" required="" class="form-control">
+						</div><br>
+            <div class="mt-10">
+							<input type="password" name="password1" placeholder="password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'password'" required="" class="form-control">
+						</div><br>
+
+            <br>
+            <h5>Password rules:</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><i class="fa fa-info-circle"></i>  Can't be too similar to your other personal information.</li>
+              <li class="list-group-item"><i class="fa fa-info-circle"></i>  Must contain at least 8 characters.</li>
+              <li class="list-group-item"><i class="fa fa-info-circle"></i>  Can’t be a commonly used password.</li>
+              <li class="list-group-item"><i class="fa fa-info-circle"></i>  Can’t be entirely numeric.</li>
+            </ul>
+            <br>
+
+            <div class="mt-10">
+							<input type="password" name="password2" placeholder="re-type password" onfocus="this.placeholder = ''" onblur="this.placeholder = 're-type password'" required="" class="form-control">
+						</div>
+            <br>
+            <button name="submit" class="btn btn-success"><i class="fa fa-paper-plane fa-lg"></i> Register</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

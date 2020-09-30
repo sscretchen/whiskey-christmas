@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load custom_tags %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <main class="posts-listing col-lg-8">
+      <div class="container">
+        <!-- Profile Details -->
+        <div class="page-content page-container-fluid" id="page-content">
+          <div class="card">
+            <div class="card-body text-center">
+              <div> <img src="{{ userprofile.image.url }}" class="img-lg rounded-circle mb-4" alt="profile image">
+                <h4>Profile of: {{ userprofile.user.username}} <img src="{% static 'img/whiskeyChristmasLogo_green.gif' %}" alt="logo" style="width:auto;height:48px;"></h4>
+                <p class="text-muted mb-0">Bio: {{ userprofile.bio|linebreaks }}</p>
+              </div>
+
+              <a href="{% url 'create_post' %}"><button class="btn btn-success">Post</button></a>
+              <a href="{% url 'users:update_profile' slug=userprofile.slug %}"><button class="btn btn-warning">Update Profile</button></a>
+              <br><br>
+              <div class="border-top pt-3">
+                <div class="row">
+                  <div class="col-6">
+                    <h6>Joined on</h6>
+                    <p>{{ userprofile.user.date_joined }}</p>
+                  </div>
+                  <div class="col-6">
+                    <h6>Last Login</h6>
+                    <p>{{ userprofile.user.last_login }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+
+        <h4 class="text-center">Your Posts</h4><br>
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Page navigation example">
+          <ul class="pagination pagination-template d-flex justify-content-center">
+
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a href="?page={{ page_obj.previous_page_number }}" class="page-link"> <i class="fa fa-angle-left fa-lg"></i></a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+              <a href="#" class="page-link"></a>
+            </li>
+            {% endif %}
+
+            {% for i in paginator.page_range %}
+            {% if page_obj.number == i  %}
+            <li class="page-item"><a href="#" class="page-link active">{{ i }}</a></li>
+            {% else %}
+            <li class="page-item"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link"><i class="fa fa-angle-right fa-lg"></i></a></li>
+            {% else %}
+            <li class="page-item disabled">
+              <a href="#" class="page-link"></a>
+            </li>
+            {% endif %}
+
+          </ul>
+          <br>
+        </nav>
+        {% endif %}
+
+        <div class="row">
+          {% for post in userposts %}
+          <div class="post col-xl-6">
+            <div class="post-thumbnail"><a href="#"><img src="{{ post.image.url }}" alt="post image" class="img-fluid"></a></div>
+            <div class="post-details">
+              <div class="post-meta d-flex justify-content-between">
+                <div class="category">
+                  {% for tag in post.tag.all %}
+                  <a href="{% url 'tag_detail' tag.slug %}"><i class="fa fa-tags"></i> {{ tag.title }}</a>
+                  {% endfor %}
+                </div>
+              </div><a href="{% url 'detail' pk=post.pk slug=post.slug %}">
+                <h3 class="h4">{{ post.title }}</h3></a>
+                <p class="text-muted">{{ post.title|truncatechars:50 }}</p>
+                <footer class="post-footer d-flex align-items-center"><a href="#" class="author d-flex align-items-center flex-wrap">
+                  <div class="date"><i class="icon-clock"></i>{{ post.timestamp|timesince }} ago</div>
+                </footer>
+              </div>
+            </div>
+          {% endfor %}
+
+          </div>
+        </div>
+      </main>
+      <aside class="col-lg-4">
+
+        <!-- Widget [Latest Posts Widget]        -->
+        <div class="widget latest-posts">
+          <header>
+            <h3 class="h6">Popular Posts</h3>
+          </header>
+          <div class="blog-posts">
+            {% hit_posts as posts  %}
+            {% for post in posts %}
+            <a href="{% url 'detail' post.pk post.slug %}">
+              <div class="item d-flex align-items-center">
+                <div class="image"><img src="{{ post.image.url }}" alt="..." class="img-fluid">
+                </div>
+                <div class="title"><strong>{{ post.title }}</strong>
+                  <div class="d-flex align-items-center">
+                    <div class="views"><i class="icon-eye"></i>{{ post.hit }} hits</div>
+                    <div class="views"> by: {{ post.user }}</div>
+                  </div>
+                </div>
+              </div>
+            </a>
+            {% endfor %}
+            </div>
+        </div>
+        <!-- Widget [Categories Widget]-->
+        <div class="widget categories">
+          <header>
+            <h3 class="h6">Categories</h3>
+          </header>
+
+          {% categories as categories %}
+          {% for category in categories %}
+          <div class="item d-flex justify-content-between">
+            <a href="{% url 'category_detail' pk=category.id slug=category.slug %}">{{ category.title }}</a>
+            <div class="text-right">
+              {{ category.post_count }}
+            </div>
+          </div>
+          {% endfor %}
+          <br>
+          <div class="text-center">
+            <!-- Modal Button trigger  -->
+            <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-info-circle fa-lg"></i>
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLongTitle">Dont See A Category?</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <p>We strive to provide accurate and real time data as this industry evolves every day. Send us a message in the contact form and we will discuss adding your Category to the site!</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Back to Site</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+        <!-- Widget [Tags Cloud Widget]-->
+        <div class="widget tags">
+          <header>
+            <h3 class="h6">Tags</h3>
+          </header>
+          <ul class="list">
+            {% tags as labels %}
+            {% for label in labels %}
+            <li class="list-inline-item"><a href="{% url 'tag_detail' label.slug %}" class="tag"><i class="fa fa-tags"></i> {{ label }} ~ {{ label.post_count}}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  {% endblock content %}

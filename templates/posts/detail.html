@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <!-- Latest Posts -->
+    <main class="post blog-post col-lg-8">
+      <div class="container">
+        <h2 class="text-center">{{ single.title }}<img src="{% static 'img/whiskeyChristmasLogo_green.gif' %}" alt="logo" style="width:auto;height:48px;"></h2><hr>
+        <div class="post-single">
+          <div class="post-thumbnail"><img src="{{ single.image.url}}" alt="..." class="img-fluid"></div>
+
+          <!-- Post meta data -->
+          <div class="post-details">
+            <div class="post-meta d-flex justify-content-between">
+              <div class="category">
+                <a href="#">
+                  <i class="fa fa-list-alt" aria-hidden="true"></i> {{ single.category }}
+                </a>
+              </div>
+            </div>
+            <div class="post-footer d-flex align-items-center flex-column flex-sm-row">
+              <a href="{% url 'users:user_posts' single.user.pk %}" class="author d-flex align-items-center flex-wrap">
+              <div class="title"><span>by: {{single.user}}</span></div>
+            </a>
+              <div class="d-flex align-items-center flex-wrap">
+                <div class="date"><i class="icon-clock"></i>{{ single.timestamp }}</div>
+                <div class="views"><i class="icon-eye"></i>{{ single.hit }} hits</div>
+                <div class="comments meta-last"><i class="icon-comment"></i>{{ single.comment_count }}</div>
+              </div>
+            </div>
+            <br>
+
+            <!-- Edit/Delete Buttons -->
+            {% if single.user == request.user %}
+            <div>
+              <a href="{% url 'update_post' single.pk single.slug %}">
+                <button type="button" class="btn btn-outline-success fa-2x">
+                  <i class="fa fa-pencil"></i>
+                </button>
+              </a>
+              <a href="{% url 'delete_post' single.pk single.slug %}">
+                <button type="button" class="btn btn-outline-danger fa-2x">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </a>
+            </div>
+            {% endif %}
+
+            <!-- Start body of post -->
+            <div class="post-body">
+              <p class="lead">{{ single.content|safe }}</p>
+            </div>
+            <div class="post-tags">
+              {% for tag in single.tag.all %}
+              <a href="{% url 'tag_detail' tag.slug %}" class="tag"><i class="fa fa-tags"></i> {{ tag.title }}</a>
+              {% endfor %}
+            </div>
+
+            <!-- previous and next post -->
+            <div class="posts-nav d-flex justify-content-between align-items-stretch flex-column flex-md-row">
+
+              {% if previous %}
+              <a href="{% url 'detail' previous.pk previous.slug %}" class="prev-post text-left d-flex align-items-center">
+                <div class="icon prev"><i class="fa fa-angle-left"></i></div>
+                <div class="text"><strong class="text-primary">Previous Post </strong>
+                  <h6>{{ previous.title }}</h6>
+                </div>
+              </a>
+              {% else %}
+              <div class="prev-post text-left d-flex align-items-center">
+                <div class="text"><strong class="text-primary">No Previous Posts <img src="{% static 'img/whiskeyChristmasLogo_black.gif' %}" alt="logo" style="width:auto;height:36px;"></strong>
+                </div>
+              </div>
+              {% endif %}
+
+              {% if next %}
+              <a href="{% url 'detail' next.pk next.slug %}" class="next-post text-right d-flex align-items-center justify-content-end">
+                <div class="text"><strong class="text-primary">Next Post </strong>
+                  <h6>{{ next.title}}</h6>
+                </div>
+                <div class="icon next"><i class="fa fa-angle-right"></i>
+                </div>
+              </a>
+              {% else %}
+              <div class="next-post text-right d-flex align-items-center justify-content-end">
+                <div class="text"><strong class="text-primary"><img src="{% static 'img/whiskeyChristmasLogo_black.gif' %}" alt="logo" style="width:auto;height:36px;"> End of Posts</strong>
+                </div>
+              </div>
+              {% endif %}
+
+            </div>
+
+
+
+                <!-- comments -->
+                <div class="post-comments">
+                  <header>
+                    <h4>Post Comments<span class="no-of-comments"> <i class="fa fa-comment"></i> - {{ single.comment_count }}</span></h4>
+                  </header>
+
+                  {% for comment in single.comments.all %}
+                  <div class="comment">
+                    <div class="comment-header d-flex justify-content-between">
+                      <div class="user d-flex align-items-center">
+                        <div class="title"><strong>by: {{ comment.name}}</strong><span class="date">{{ comment.publishing_date|timesince }} ago</span></div>
+                      </div>
+                    </div>
+                    <div class="comment-body">
+                      <p>{{ comment.content }}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+
+                <div class="add-comment">
+                  <header>
+                    <h3 class="h6">Leave a reply</h3>
+                  </header>
+                  {% if form.errors %}
+                  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <div class="form_errors">
+                      {% for key,value in form.errors.items %}
+                        <span class="fieldWrapper">
+                          {{ key }} : {{ value }}
+                        </span>
+                      {% endfor %}
+                    </div>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  {% endif %}
+
+                  {% crispy form %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        {% include 'right_side.html' %}
+
+      </div>
+    </div>
+
+    {% endblock %}

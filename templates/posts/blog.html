@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <!-- Latest Posts -->
+    <main class="posts-listing col-lg-8">
+      <div class="container">
+        <h2 class="text-center">Members Posts <img src="{% static 'img/whiskeyChristmasLogo_green.gif' %}" alt="logo" style="width:auto;height:48px;"></h2><hr>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation example">
+          <ul class="pagination pagination-template d-flex justify-content-center">
+            {% if queryset.has_previous %}
+            <li class="page-item">
+              <a href="?{{ page_request_var }}={{ queryset.previous_page_number }}" class="page-link"> <i class="fa fa-angle-left fa-lg"></i></a></li>
+            {% endif %}
+            <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.number }}" class="page-link active">{{ queryset.number }}</a></li>
+            {% if queryset.has_next %}
+            <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.next_page_number }}" class="page-link"> <i class="fa fa-angle-right fa-lg"></i></a></li>
+            {% endif %}
+          </ul>
+          <br>
+        </nav>
+
+        <div class="row">
+          {% for post in queryset %}
+          <div class="post col-xl-6">
+            <div class="post-thumbnail"><a href="#"><img src="{{ post.image.url }}" alt="..." class="img-fluid"></a></div>
+            <div class="post-details">
+              <div class="post-meta d-flex justify-content-between">
+                <div class="category">
+                  {% for tag in post.tag.all %}
+                  <a href="{% url 'tag_detail' tag.slug %}"><i class="fa fa-tags"></i> {{ tag.title }}</a>
+                  {% endfor %}
+                </div>
+                <div class="category">
+                <a href="{% url 'detail' pk=post.pk slug=post.slug %}"><i class="fa fa-list-alt" aria-hidden="true"></i> {{ post.category }}</a>
+              </div>
+              </div><a href="{% url 'detail' pk=post.pk slug=post.slug %}">
+                <h3 class="h4">{{ post.title }}</h3></a>
+                <p class="text-muted">{{ post.title|truncatechars:50 }}</p>
+                <footer class="post-footer d-flex align-items-center"><a href="{% url 'users:user_posts' post.user.pk %}" class="author d-flex align-items-center flex-wrap">
+                  <div class="title"><span>by: {{ post.user }}</span></div></a>
+                  <div class="date"><i class="icon-clock"></i>{{ post.timestamp|timesince }} ago</div>
+                  <div class="date"><i class="icon-comment"></i>{{ post.comment_count }}</div>
+                </footer>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </main>
+
+      {% include 'right_side.html' %}
+    </div>
+  </div>
+
+  {% endblock content %}

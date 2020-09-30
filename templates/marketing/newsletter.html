@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="blog_area p_120">
+  <div class="container">
+    <div class="row">
+      <div class="container-fluid">
+        <div class="blog_left_sidebar">
+
+          <h2>Newsletter <img src="{% static 'img/whiskeyChristmasLogo_green.gif' %}" alt="whiskey christmas GIF icon" style="width:auto;height:36px;"></h2><hr>
+          <div>
+            <a href="{% url 'index' %}"><i class="fa fa-home fa-2x"></i></a>
+          </div>
+          <br>
+          <form action="" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" value="Join" class="btn btn-success">Signup</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

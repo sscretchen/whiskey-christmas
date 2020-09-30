@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+  <br>
+  <h2 style="color:forestgreen">Update Profile <img src="{% static 'img/whiskeyChristmasLogo_full.gif' %}" alt="whiskey christmas GIF icon" style="width:auto;height:36px;"></h2><hr>
+  {% crispy form %}
+  <br>
+
+</div>
+
+{% endblock %}

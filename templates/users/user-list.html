@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+
+
+  <div class="row">
+    <main class="posts-listing col-lg-8">
+      <h2 class="text-center">All Members<img src="{% static 'img/whiskeyChristmasLogo_green.gif' %}" alt="logo" style="width:auto;height:48px;"></h2>
+
+      <!-- Pagination -->
+      {% if is_paginated %}
+      <nav aria-label="Page navigation example">
+        <ul class="pagination pagination-template d-flex justify-content-center">
+
+          {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-link"> <i class="fa fa-angle-left fa-lg"></i></a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <a href="#" class="page-link"></a>
+          </li>
+          {% endif %}
+
+          {% for i in paginator.page_range %}
+          {% if page_obj.number == i  %}
+          <li class="page-item"><a href="#" class="page-link active">{{ i }}</a></li>
+          {% else %}
+          <li class="page-item"><a href="?page={{ i }}" class="page-link">{{ i }}</a></li>
+          {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+          <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link"><i class="fa fa-angle-right fa-lg"></i></a></li>
+          {% else %}
+          <li class="page-item disabled">
+            <a href="#" class="page-link"></a>
+          </li>
+          {% endif %}
+
+        </ul>
+        <br>
+      </nav>
+      {% endif %}
+
+      <div class="container">
+        {% for profile in profiles %}
+        <!-- Profile Details -->
+        <div class="page-content page-container-fluid" id="page-content">
+          <div class="card">
+            <div class="card-body text-center">
+              <div> <img src="{{ profile.image.url }}" class="img-lg rounded-circle mb-4" alt="profile image">
+                <h4>Profile of: {{ profile.user.username}} <img src="{% static 'img/whiskeyChristmasLogo_green.gif' %}" alt="logo" style="width:auto;height:48px;"></h4>
+                {% if profile.bio %}
+                <p class="text-muted mb-0">Bio: {{ profile.bio|linebreaks }}</p>
+                {% else %}
+                <p class="text-muted mb-0">No Bio</p><br>
+                {% endif %}
+              </div>
+
+              <a href="{% url 'users:user_posts' pk=profile.user.pk %}"><button class="btn btn-outline-success">View Users Posts</button></a>
+              <br><br>
+              <div class="border-top pt-3">
+                <div class="row">
+                  <div class="col-6">
+                    <h6>Joined on</h6>
+                    <p>{{ profile.user.date_joined }}</p>
+                  </div>
+                  <div class="col-6">
+                    <h6>Last Login</h6>
+                    <p>{{ profile.user.last_login }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        {% endfor %}
+
+      </div>
+    </main>
+
+    {% include 'right_side.html' %}
+
+  </div>
+</div>
+
+{% endblock content %}

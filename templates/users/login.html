@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+  <br>
+  {% if not user.is_authenticated %}
+  <h2 style="color:forestgreen">Welcome Back <img src="{% static 'img/whiskeyChristmasLogo_full.gif' %}" alt="whiskey christmas GIF icon" style="width:auto;height:36px;"></h2><hr>
+  <div>
+    <p>Not a member? <a href="{% url 'users:register' %}">Signup!</a>
+    </p>
+  </div>
+  <br>
+  <form method="post">
+    {% csrf_token %}
+
+    {% if form.errors %}
+    <div id="errors">
+      <div class="inner">
+        <p style="color:red">Please correct the errors below</p>
+        <ul>
+          {% for field in form %}
+          {% if field.errors %}
+          <li>{{ form.label }} {{ field.errors|striptags }}</li>
+          {% endif %}
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <br>
+    {% endif %}
+
+    <div class="mt-10">
+      <input type="text" name="username" placeholder="username" onfocus="this.placeholder = ''" onblur="this.placeholder = 'username'" required="" class="form-control">
+    </div><br>
+
+    <div class="mt-10">
+      <input type="password" name="password" placeholder="password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'password'" required="" class="form-control">
+    </div><br>
+
+    <button name="submit" class="btn btn-success"><i class="fa fa-paper-plane fa-lg"></i> Login</button>
+  </form>
+  <br>
+  {% else %}
+  <br><br><br>
+  <div class="text-center">
+      <h2 style="font-family:Mountains of Christmas" class="display-4">You are already logged in!</h2><hr>
+      <a href="{% url 'index' %}"><i class="fa fa-home fa-3x"></i></a>
+  </div>
+  <br><br><br>
+  {% endif %}
+</div>
+
+{% endblock %}

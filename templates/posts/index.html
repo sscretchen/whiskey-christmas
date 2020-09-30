@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Gallery Section-->
+
+<section class="gallery no-padding">
+  <hr>
+  <div class="row">
+    {% for post in posts %}
+    <div class="mix col-lg-4 col-md-3 col-sm-6">
+      <div class="item">
+      <a href="{{ post.image.url }}" data-fancybox="gallery" class="image"><img src="{{ post.image.url }}" alt="..." class="img-fluid">
+        <div class="overlay d-flex align-items-center justify-content-center"><i class="icon-search"></i></div>
+        <br><br>
+        <div class="carousel-caption d-none d-md-block">
+          <h6>From post : "{{ post.title }}"</h6>
+        </div>
+      </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <hr>
+</section>
+
+        <!-- Intro Section-->
+        <section class="intro">
+          <div class="container">
+            <div class="container-fluid">
+              <h3 class="text-center">About this blog</h3><br>
+              <h4 class="text-center">We are a community of Whiskey, Bourbon & Scotch enthusiasts who love to talk shop about our favorite glass of "The Hard Stuff". Enjoy top-rated posts from our members below or <a href="{% url 'users:register' %}">become a member</a> and join in on the discussion!
+                <br><br><img src="{% static 'img/whiskeyChristmasLogo_green.gif' %}" alt="logo" style="width:auto;height:48px;">
+              </h4>
+              <hr>
+            </div>
+          </div>
+        </section>
+
+        <!-- Featured Post section-->
+        <section class="featured-posts no-padding-top">
+          <div class="container">
+            <h1 class="text-center">Featured Posts</h1>
+
+            <div class="text-center">
+              <!-- Modal Button trigger  -->
+              <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-info-circle fa-lg"></i>
+              </button>
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title" id="exampleModalLongTitle">Want to Get Featured?</h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Members who garner the most engagement through Likes and Post Hits are featured.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-success" data-dismiss="modal">Back to Site</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br><br>
+            </div>
+
+
+            {% for post in slider_posts  %}
+            <div class="row d-flex align-items-stretch">
+              {% if not forloop.first and not forloop.last  %}
+              <div class="image col-lg-5"><img src="{{ post.image.url }}" alt="..."></div>
+              {% endif %}
+              <div class="text col-lg-7">
+                <div class="text-inner d-flex align-items-center">
+                  <div class="content">
+                    <header class="post-header">
+                      <a href="{% url 'detail' pk=post.pk slug=post.slug %}">
+                        <h2 class="h4">{{ post.title }}</h2>
+                      </a>
+                      <div class="category">
+                        {% for tag in post.tag.all %}
+                        <a href="{% url 'tag_detail' tag.slug %}">#{{ tag.title }}</a>
+                        {% endfor %}
+                      </div>
+                    </header>
+                    <p>{{ post.content|truncatechars:350 }}</p>
+                    <footer class="post-footer d-flex align-items-center"><a href="{% url 'users:user_posts' post.user.pk %}" class="author d-flex align-items-center flex-wrap">
+                      <div class="title"><span style="color:ForestGreen">by: {{ post.user }}</span></div></a>
+                      <!-- template tage 'timesince' is a way of showing real time
+                      when post was made. remove 'timesince' to see an exact date-->
+                      <div class="date"><i class="icon-clock"></i>{{ post.timestamp|timesince }} ago</div>
+                      <div class="comments"><i class="icon-comment"></i>{{ post.comment_count }}</div>
+                    </footer>
+                  </div>
+                </div>
+              </div>
+              {% if forloop.first or forloop.last  %}
+              <div class="image col-lg-5"><img src="{{ post.image.url }}" alt="..."></div>
+              {% endif %}
+            </div>
+            <br>
+            {% endfor %}
+
+          </section>
+
+          <!-- Divider Section-->
+          <section style="background: url({% static 'img/divider-bg.png' %}); background-size: cover; background-position: center bottom" class="divider">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-7">
+                  <h2><i>"All Bourbon is Whiskey but not all Whiskey is Bourbon."</i></h2>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Latest Posts -->
+
+          <section class="latest-posts">
+            <div class="container">
+              <header>
+                <h1 class="text-center">Latest Posts</h1>
+              </header>
+
+              <div class="row">
+                {% for post in posts %}
+                <div class="post col-md-4">
+                  <div class="post-image">
+                    <img src="{{ post.image.url }}" alt="..." class="img-fluid">
+                  </div>
+                  <div class="post-details">
+                    <div class="post-meta d-flex justify-content-between">
+                      <div class="date">{{ post.timestamp|timesince }} ago</div>
+                      <div class="category">
+                        <a href="{% url 'detail' pk=post.pk slug=post.slug %}">{{ post.category }}</a>
+                      </div>
+                    </div>
+                    <a href="{% url 'detail' pk=post.pk slug=post.slug %}">
+                      <h3 class="h4">{{ post.title }}</h3>
+                    </a>
+                    <p class="text-muted">{{ post.content|safe|truncatechars:75 }}</p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+
+              <p class="text-center"><br><a href="{% url 'post-list' %}"><button class="btn btn-success" type="button" name="button"> View All Posts</button></a></p>
+            </div>
+          </section>
+
+          <!-- Newsletter Section-->
+          <section class="newsletter no-padding-top">
+            <div class="container">
+              <br><br>
+              <div class="d-flex justify-content-center">
+                  <a href="{% url 'newsletter' %}"><h2 class="text-center">Subscribe to our Newsletter</h2></a>
+              </div>
+            </div>
+          </section>
+
+          {% endblock %}

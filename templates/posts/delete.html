@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+  <br><br>
+  <h2 class="text-center">Are You Sure You Want To Delete This Post? <img src="{% static 'img/whiskeyChristmasLogo_black.gif' %}" alt="whiskey christmas GIF icon" style="width:auto;height:36px;"></h2><hr>
+  <form method="post">
+    {% csrf_token %}
+    <div class="text-center">
+      <a href="{% url 'detail' object.pk object.slug %}" class="btn btn-success btn-lg">NO</a>
+      <button type="submit" class="btn btn-outline-danger">YES</button>
+    </div>
+  </form>
+  <br><br>
+</div>
+
+{% endblock %}

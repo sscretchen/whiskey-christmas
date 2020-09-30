@@ -1,0 +1,103 @@
+{% load static %}
+{% load custom_tags %}
+
+<aside class="col-lg-4">
+  <!-- Widget [Search Bar Widget]-->
+  <div class="widget search">
+    <header>
+      <h3 class="h6">Search the blog</h3>
+    </header>
+    <form action="{% url 'search' %}" method="get" class="search-form">
+      <div class="form-group">
+        <input type="text" name="q" placeholder="What are you looking for?">
+        <button type="submit" class="submit">
+          <span style="color: ForestGreen;">
+            <i class="fa fa-search fa-lg"></i>
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+  <!-- Widget [Latest Posts Widget]        -->
+  <div class="widget latest-posts">
+    <header>
+      <h3 class="h6">Popular Posts</h3>
+    </header>
+    <div class="blog-posts">
+      {% hit_posts as posts  %}
+      {% for post in posts %}
+      <a href="{% url 'detail' post.pk post.slug %}">
+        <div class="item d-flex align-items-center">
+          <div class="image"><img src="{{ post.image.url }}" alt="..." class="img-fluid">
+          </div>
+          <div class="title"><strong>{{ post.title }}</strong>
+            <div class="d-flex align-items-center">
+              <div class="views"><i class="icon-eye"></i>{{ post.hit }} hits</div>
+              <div class="views"> by: {{ post.user }}</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+      </div>
+  </div>
+  <!-- Widget [Categories Widget]-->
+  <div class="widget categories">
+    <header>
+      <h3 class="h6">Categories</h3>
+    </header>
+
+    {% categories as categories %}
+    {% for category in categories %}
+    <div class="item d-flex justify-content-between">
+      <a href="{% url 'category_detail' pk=category.id slug=category.slug %}">{{ category.title }}</a>
+      <div class="text-right">
+        {{ category.post_count }}
+      </div>
+    </div>
+    {% endfor %}
+    <br>
+    <div class="text-center">
+      <!-- Modal Button trigger  -->
+      <button type="button" class="btn btn-outline-success" data-toggle="modal" data-target="#exampleModalLong"><i class="fa fa-info-circle fa-lg"></i>
+      </button>
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title" id="exampleModalLongTitle">Dont See A Category?</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>We strive to provide accurate and real time data as this industry evolves every day. Send us a message in the contact form and we will discuss adding your Category to the site!</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-dismiss="modal">Back to Site</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  <!-- Widget [Tags Cloud Widget]-->
+  <div class="widget tags">
+    <header>
+      <h3 class="h6">Tags</h3>
+    </header>
+    <ul class="list">
+      {% tags as labels %}
+      {% for label in labels %}
+      <div class="item d-flex justify-content-center">
+        <li class="list-inline-item"><a href="{% url 'tag_detail' label.slug %}" class="tag">
+          <i class="fa fa-tags"></i> {{ label }} ~ {{ label.post_count}}</a>
+        </li>
+      </div>
+      {% endfor %}
+    </ul>
+  </div>
+</aside>

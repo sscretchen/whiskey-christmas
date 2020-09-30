@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="container">
+  <br>
+  <h2 style="color:forestgreen">Create Post <img src="{% static 'img/whiskeyChristmasLogo_full.gif' %}" alt="whiskey christmas GIF icon" style="width:auto;height:36px;"></h2><hr>
+  {{ form.media }}
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+
+    <br>
+    <div class="mt-10">
+      <input type="text" name="tag" placeholder="Post Tags. Seperate with a comma ','" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Post Tags. Seperate with a comma ',''" required="" class="form-control">
+    </div>
+    <br>
+    <button name="submit" class="btn btn-success"><i class="fa fa-paper-plane fa-2x"></i> Post</button>
+    <br><br>
+
+</div>
+
+{% endblock %}
